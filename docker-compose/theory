@@ -1,0 +1,59 @@
+Docker Compose is a tool that helps define and run multi-container Docker applications using a simple YAML file called docker-compose.yml.
+
+📌 Why Use Docker Compose?
+Easier Multi-Container Management: Define multiple containers (services) in a single file.
+Networking Simplification: Automatically creates networks and connects services.
+Environment Isolation: Separate environments for development, testing, and production.
+Efficient Scaling: Run multiple instances of services with ease.
+Portability: Easier to share and deploy projects across systems.
+📌 Key Components
+Services: Define containers to run (e.g., web, database).
+Networks: Allow containers to communicate with each other.
+Volumes: Persist data even when containers are destroyed.
+Environment Variables: Customize services without changing code.
+📌 Basic Structure (docker-compose.yml)
+version: '3'
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    networks:
+      - mynetwork
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+
+volumes:
+  db_data:
+📌 Important Commands
+Build & Run Services:
+docker compose up --build
+Run Services in Background:
+docker compose up -d
+Stop Services:
+docker compose down
+View Logs:
+docker compose logs -f
+List Running Containers:
+docker compose ps
+Remove Containers, Networks, Volumes:
+docker compose down -v
+📌 Explanation of the YAML File
+version: Defines the Compose file format.
+services: Lists all services (containers) to be run.
+image: Specifies the Docker image to use.
+ports: Maps internal ports to external ones (8080:80).
+networks: Defines internal networks for communication between services.
+volumes: Persists data outside the container’s filesystem.
+environment: Sets environment variables.
