@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Quote Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        #quote { margin-top: 20px; padding: 10px; border: 1px solid #ddd; width: 60%; margin-left: auto; margin-right: auto; }
+        button { padding: 10px 20px; margin-top: 20px; }
+    </style>
+    <script>
+        async function fetchQuote() {
+            const response = await fetch('/random-quote');
+            const data = await response.json();
+            document.getElementById('quote').innerText = data.quote;
+        }
+    </script>
+</head>
+<body>
+    <h1>Random Quote Generator</h1>
+    <button onclick="fetchQuote()">Get Random Quote</button>
+    <div id="quote"></div>
+</body>
+</html>
+
