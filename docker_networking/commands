@@ -1,0 +1,98 @@
+# Docker Networking & Two-Tier Flask App Notes
+
+### 1. Cloning and Inspecting the Repository
+- **Clone Repository:**
+  ```bash
+  git clone https://github.com/LondheShubham153/two-tier-flask-app.git
+  ```
+- **Navigate to Directory:**
+  ```bash
+  cd two-tier-flask-app
+  ```
+- **View App Code:**
+  ```bash
+  cat app.py
+  ```
+
+### 2. Building Docker Image
+- **Build Image with Dockerfile:**
+  ```bash
+  docker build -t two-tier-backend .
+  ```
+
+### 3. Running MySQL Container
+- **Create MySQL Container:**
+  ```bash
+  docker run -itd --name mysql-container -e MYSQL_ROOT_PASSWORD=root mysql
+  ```
+- **Access MySQL CLI:**
+  ```bash
+  docker exec -it mysql-container mysql -uroot -p
+  ```
+
+### 4. Running Flask Backend Container
+- **Run Flask App with Network Variables:**
+  ```bash
+  docker run -d -p 5000:5000 -e MYSQL_HOST=mysql -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DB=devops two-tier-backend:latest
+  ```
+
+### 5. Creating Docker Network
+- **Create Bridge Network:**
+  ```bash
+  docker network create two-tier -d bridge
+  ```
+
+### 6. Running MySQL on Custom Network
+- **Run MySQL on Two-Tier Network:**
+  ```bash
+  docker run -d --name mysql --network two-tier -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=devops mysql
+  ```
+
+### 7. Running Flask App on Custom Network
+- **Run Flask App on Two-Tier Network:**
+  ```bash
+  docker run -d -p 5000:5000 --network two-tier -e MYSQL_HOST=mysql -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DB=devops two-tier-backend:latest
+  ```
+
+### 8. Inspecting Docker Network
+- **Inspect Network Configuration:**
+  ```bash
+  docker network inspect two-tier
+  ```
+
+### 9. Debugging & Logs
+- **View Logs of Flask App:**
+  ```bash
+  docker logs <container_id>
+  ```
+- **Access MySQL Container:**
+  ```bash
+  docker exec -it <mysql_container_id> bash
+  ```
+
+### 10. Testing Application
+- **Test Connection:**
+  ```bash
+  curl http://127.0.0.1:5000/
+  ```
+
+### 11. Cleanup & Restarting
+- **Stop & Remove Containers:**
+  ```bash
+  docker stop <container_id>
+  docker rm <container_id>
+  ```
+- **Re-run Containers after Cleanup:**
+  ```bash
+  docker run -d --name mysql --network two-tier -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=devops mysql
+  docker run -d -p 5000:5000 --network two-tier -e MYSQL_HOST=mysql -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DB=devops two-tier-backend:latest
+  ```
+
+### 12. Git Management
+- **Push Changes to Repository:**
+  ```bash
+  git add .
+  git commit -m "docker networking"
+  git push
+  ```
+
