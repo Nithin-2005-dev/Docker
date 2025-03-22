@@ -1,0 +1,80 @@
+# Docker Networking
+
+Docker networking allows containers to communicate with each other, the host machine, and the outside world. There are several networking modes, each serving a specific purpose.
+
+## Network Types
+
+1. **Bridge (Default)**
+   - Default network when no network is specified.
+   - Containers get their own IP addresses but can communicate using container names.
+   - Network is isolated from the host.
+   - Commands:
+     ```bash
+     docker network ls                    # List all networks
+     docker run --network bridge ...      # Use the default bridge network
+     docker network inspect bridge        # View bridge network details
+     ```
+
+2. **User-defined Bridge (Custom)**
+   - Enhanced bridge network with improved container communication.
+   - Containers can communicate by name without specifying IP addresses.
+   - Commands:
+     ```bash
+     docker network create my_bridge
+     docker run --network my_bridge ...
+     docker network inspect my_bridge
+     ```
+
+3. **Host Network**
+   - Container shares the network stack of the host system.
+   - Useful for performance-heavy apps where network isolation is unnecessary.
+   - Commands:
+     ```bash
+     docker run --network host ...
+     ```
+
+4. **None**
+   - Disables networking completely.
+   - Used when you need to completely isolate a container from networking.
+   - Commands:
+     ```bash
+     docker run --network none ...
+     ```
+
+5. **MACVLAN (Docker Swarm)**
+   - Assigns a MAC address to the container, making it appear as a physical device on the network.
+   - Useful for legacy applications expecting direct LAN access.
+   - Commands:
+     ```bash
+     docker network create -d macvlan --subnet=192.168.1.0/24 --gateway=192.168.1.1 -o parent=eth0 my_macvlan
+     docker run --network my_macvlan ...
+     ```
+
+6. **IPVLAN**
+   - More efficient than MACVLAN; allows containers to share the host's network interface while having unique IP addresses.
+   - Best for high-performance networking scenarios.
+   - Commands:
+     ```bash
+     docker network create -d ipvlan ...
+     ```
+
+7. **Overlay**
+   - Used for multi-host networking, especially in Docker Swarm.
+   - Allows containers running on different Docker hosts to communicate.
+   - Commands:
+     ```bash
+     docker network create -d overlay my_overlay
+     docker service create --network my_overlay ...
+     ```
+
+## Comparison Table
+| Network Type     | Isolation | Communication        | Use Case                            |
+|------------------|-----------|----------------------|------------------------------------|
+| Bridge           | Yes       | Container Names      | Default network for isolated apps  |
+| User-defined     | Yes       | Container Names      | Enhanced communication             |
+| Host             | No        | Shared with Host     | High-performance networking        |
+| None             | Yes       | No Network           | Complete isolation                 |
+| MACVLAN          | Yes       | LAN Communication    | Legacy apps, advanced routing      |
+| IPVLAN           | Yes       | Shared Network       | High-performance, simpler than MACVLAN |
+| Overlay          | Yes       | Multi-Host           | Docker Swarm & Container Orchestration |
+
